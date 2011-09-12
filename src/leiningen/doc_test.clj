@@ -13,6 +13,6 @@
                                      function-names# (keys (ns-interns (find-ns (symbol loaded-file-ns#))))]
                                  (map doc-test function-names#))) sources#))
                      nil
-                     false
+                     nil
                      `(use '[clj-doc-test.util]
                            '[clj-doc-test.core]))))
