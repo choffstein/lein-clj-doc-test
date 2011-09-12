@@ -15,7 +15,7 @@
 (defn- dir? [path]
   (.isDirectory (java.io.File. path)))
 
-(defn- format-sources [source-path]
+(defn format-sources [source-path]
   (if (nil? source-path)
     (find-clojure-file-paths "./src")
     (->> source-path
