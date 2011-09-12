@@ -14,5 +14,8 @@
                                  (map doc-test function-names#))) sources#))
                      nil
                      nil
-                     `(use '[clj-doc-test.util]
-                           '[clj-doc-test.core]))))
+                     `(do
+                        (use '[clj-doc-test.util]
+                             '[clj-doc-test.core])
+                        (require '[clojure.java.io :as io])
+                        (import '[java.io.File])))))
