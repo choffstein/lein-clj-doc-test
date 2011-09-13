@@ -5,18 +5,22 @@
 (defn doc-test
   "Run doc-test on all functions in all source files"
   [project]
-  (let [source-path (:source-path project)]
+  (let [source-path (:source-path project)
+        seq-source-path (if (not (sequential? source-path)) [source-path] source-path)]
     (eval-in-project project
                      `(do
-                        (defonce sources# (util/format-sources ~source-path))
+                        (defonce sources# (util/format-sources ~seq-source-path))
                         (doseq [file-name# sources#]
-                          (let [loaded-file-ns# (util/file-ns file-name#)
-                                function-names# (keys (ns-interns (find-ns (symbol loaded-file-ns#))))]
-                            (map #(core/doc-test %) function-names#))))
+                          (try (let [loaded-file-ns# (util/file-ns file-name#)
+                                     function-names# (do
+                                                       (load-file file-name#)
+                                                       (keys (ns-interns (find-ns (symbol loaded-file-ns#)))))]
+                                 (doseq [function-name# function-names#]
+                                   (let [fn-symbol# (symbol (str loaded-file-ns# "/" function-name#))]
+                                     (core/doc-test fn-symbol#))))
+                               (catch java.lang.NullPointerException e# ()))))
                      nil
                      nil
                      '(do
-                        (require '[clojure.java.io :as io]
-                                 '[clj-doc-test.util :as util]
-                                 '[clj-doc-test.core :as core])
-                        (import '[java.io.File])))))
+                        (require '[clj-doc-test.util :as util]
+                                 '[clj-doc-test.core :as core])))))

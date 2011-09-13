@@ -1,5 +1,6 @@
 (ns
     #^{:author "Andy Kish"
+       :contributor "Corey M. Hoffstein"
        :doc "Verifies correctness of example expressions in doc-strings."}
   clj-doc-test.core
   (:use clojure.test)
@@ -36,20 +37,10 @@
     (map (fn [[expr result]] `(is (= ~expr '~result)))
          exprs)))
 
-(defmacro doc-test
-  "Creates a (deftest ...) form based upon the examples in f's doc."
+;; transformed this from a macro to a function that runs real-time
+(defn doc-test
   [f]
-  (let [f-meta (eval `(meta (var ~f)))
+  (let [f-meta (eval `(meta ~f)) ;;(var ~f)
         is-statments (to-is (:doc f-meta))]
     (if (seq is-statments) ; only make a test if there are doc-tests
-      `(deftest ~(gensym (str (:name f-meta) "__doc-test__"))
-         ~@is-statments))))
-
-; what the doc-test macro output is shooting for, approximately
-;(deftest adder__doc-test__...
-;  (is (= ((adder 1) 4) 3)))
-
-(comment
-  (doc-test read-expr-pair)
-  (doc-test find-expression-strings)
-  (doc-test to-is))
+        (eval `(do ~@is-statments)))))

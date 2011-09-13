@@ -1,19 +1,18 @@
 (ns clj-doc-test.util
   (:use [clojure.contrib
          [find-namespaces :only (read-file-ns-decl)]])
-  (:require [clojure.java.io :as io])
-  (:import [java.io.File]))
+  (:require [clojure.java.io :as io]))
 
 ;; Horribly, horribly stolen from marginalia
 (defn- find-clojure-file-paths
   [dir]
-  (->> (java.io.File. dir)
+  (->> (io/file dir)
        (file-seq)
        (filter #(re-find #"\.clj$" (.getAbsolutePath %)))
        (map #(.getAbsolutePath %))))
 
 (defn- dir? [path]
-  (.isDirectory (java.io.File. path)))
+  (.isDirectory (io/file path)))
 
 (defn format-sources [source-path]
   (if (nil? source-path)
@@ -27,7 +26,7 @@
 
 ;; bastardized from marginalia
 (defn file-ns [f]
-  (-> (java.io.File. f)
+  (-> (io/file f)
       (read-file-ns-decl)
       (second)
       (str)))
