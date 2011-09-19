@@ -39,8 +39,8 @@
 
 ;; transformed this from a macro to a function that runs real-time
 (defn doc-test
-  [f]
-  (let [f-meta (eval `(meta ~f)) ;;(var ~f)
-        is-statments (to-is (:doc f-meta))]
-    (if (seq is-statments) ; only make a test if there are doc-tests
-        (eval `(do ~@is-statments)))))
+  [name-space function-name]
+  (let [f-meta (or (meta (resolve (symbol (str name-space "/" function-name)))) {})
+        is-statements (to-is (or (:doc f-meta) ""))] ;; incase there is an empty (or no) doc-string
+    (if (sequential? is-statements) ; only make a test if there are doc-tests
+        (eval `(do (use '[~name-space]) ~@is-statements)))))

@@ -10,17 +10,16 @@
     (eval-in-project project
                      `(do
                         (defonce sources# (util/format-sources ~seq-source-path))
+                        (println sources#)
                         (doseq [file-name# sources#]
                           (try (let [loaded-file-ns# (util/file-ns file-name#)
                                      function-names# (do
                                                        (load-file file-name#)
-                                                       (keys (ns-interns (find-ns (symbol loaded-file-ns#)))))]
+                                                       (keys (ns-publics (find-ns (symbol loaded-file-ns#)))))]
                                  (doseq [function-name# function-names#]
-                                   (let [fn-symbol# (symbol (str loaded-file-ns# "/" function-name#))]
-                                     (core/doc-test fn-symbol#))))
+                                     (core/doc-test (symbol loaded-file-ns#) (symbol function-name#))))
                                (catch java.lang.NullPointerException e# ()))))
                      nil
                      nil
-                     '(do
-                        (require '[clj-doc-test.util :as util]
-                                 '[clj-doc-test.core :as core])))))
+                     '(require '[clj-doc-test.util :as util]
+                               '[clj-doc-test.core :as core]))))
