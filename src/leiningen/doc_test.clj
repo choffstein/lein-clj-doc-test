@@ -10,7 +10,6 @@
     (eval-in-project project
                      `(do
                         (defonce sources# (util/format-sources ~seq-source-path))
-                        (println sources#)
                         (doseq [file-name# sources#]
                           (try (let [loaded-file-ns# (util/file-ns file-name#)
                                      function-names# (do
