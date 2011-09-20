@@ -11,13 +11,17 @@
                      `(do
                         (defonce sources# (util/format-sources ~seq-source-path))
                         (doseq [file-name# sources#]
+                          (println (str "Examining " file-name# "..."))
                           (try (let [loaded-file-ns# (util/file-ns file-name#)
                                      function-names# (do
                                                        (load-file file-name#)
                                                        (keys (ns-publics (find-ns (symbol loaded-file-ns#)))))]
                                  (doseq [function-name# function-names#]
-                                     (core/doc-test (symbol loaded-file-ns#) (symbol function-name#))))
-                               (catch java.lang.NullPointerException e# ()))))
+                                   (println (str "+ Testing " function-name# "..."))
+                                   (core/doc-test (symbol loaded-file-ns#) (symbol function-name#))))
+                               (catch java.lang.NullPointerException e# ())
+                               (finally
+                                (println "-------------------------------------------------------")))))
                      nil
                      nil
                      '(require '[clj-doc-test.util :as util]
