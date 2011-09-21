@@ -6,6 +6,8 @@
   => (adder 1 2)
   5 ; incorrect!
   => (adder 4 5)
-  9"
+  9
+  => (adder (+ 3 5) 5)
+  13"
   [n1 n2]
   (+ n1 n2))

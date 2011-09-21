@@ -42,11 +42,14 @@
   [name-space function-name]
   (let [f-meta (or (meta (resolve (symbol (str name-space "/" function-name)))) {})
         is-statements (to-is (or (:doc f-meta) ""))] ;; incase there is an empty (or no) doc-string
-    (if (sequential? is-statements) ; only make a test if there are doc-tests
-      (binding [*ns* (create-ns `clj-doc-test.sandbox#)] ;;ripped from technomancy's slamhound (line 33 of regrow.clj)
+    (if (and (sequential? is-statements) (not (empty? is-statements))) ;; only make a test if there are doc-tests
+      (binding [*ns* (create-ns `clj-doc-test.sandbox#)] ;; ripped from technomancy's slamhound (line 33 of regrow.clj)
         (try
           (eval `(do
+                   (use '[clojure.core]) ;; need this guy for basic functionality
                    (use '[~name-space])
-                   ~@is-statements))
+                   (deftest ~(gensym (str function-name "__doc-test__"))
+                     ~@is-statements)
+                   (run-tests)))
           (finally
            (remove-ns (.name *ns*))))))))
