@@ -4,6 +4,11 @@ Take clj-doc-test and create a lein plugin for it.
 For now, will run all doc tests.
 In the future, should probably also have option arguments for what files to run on.
 
+## Installation
+Add the following to your project dependencies
+
+	[lein-clj-doc-test "0.0.1"]
+
 ## Usage
 
 	lein doc-test
