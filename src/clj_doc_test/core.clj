@@ -4,7 +4,7 @@
        :doc "Verifies correctness of example expressions in doc-strings."}
   clj-doc-test.core
   (:use clojure.test)
-  (:use [clojure.contrib.str-utils :only (re-split)]))
+  (:use [clojure.string :only (split)]))
 
 (defn- read-expr-pair
   "Read two expressions from expr-string and return a tuple of them.
@@ -23,7 +23,7 @@
   => (find-expression-strings (str \\newline \"=> ((adder 1) 2) 3\"))
   (\" ((adder 1) 2) 3\")"
   [docstr]
-  (drop 1 (re-split #"\n\s*=>" docstr)))
+  (drop 1 (split docstr #"\n\s*=>")))
 
 (defn to-is
   "Converts a doc-test to forms using clojure.test/is.

@@ -1,6 +1,6 @@
 (ns clj-doc-test.util
-  (:use [clojure.contrib
-         [find-namespaces :only (read-file-ns-decl)]])
+  (:use [clojure.tools
+         [namespace :only (read-file-ns-decl)]])
   (:require [clojure.java.io :as io]))
 
 ;; Horribly, horribly stolen from marginalia
